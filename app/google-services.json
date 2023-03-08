@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "961012689055",
+    "firebase_url": "https://foodwarprm392-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "foodwarprm392",
+    "storage_bucket": "foodwarprm392.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961012689055:android:1e30f1cb53694c2d2a9aaa",
+        "android_client_info": {
+          "package_name": "com.example.foodwar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq953litQxzRHfmAwlPGnaVJQ4B8USOW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961012689055:android:b27fd476447da8712a9aaa",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq953litQxzRHfmAwlPGnaVJQ4B8USOW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961012689055:android:412a419f8a191b9e2a9aaa",
+        "android_client_info": {
+          "package_name": "se.com.project_reviewfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq953litQxzRHfmAwlPGnaVJQ4B8USOW8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961012689055-onhp2sl9a68sq48kj5fvrddsemq96eqn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
