@@ -6,13 +6,13 @@ public class User {
     private String userID;
     private String userName;
     private String email;
-    private int gender;
+    private String gender;
     private String phone;
     private String avata;
     private String role;
     private Boolean status;
 
-    public User(String userID,String userName, String email, int gender, String phone, String avata,String role, Boolean status) {
+    public User(String userID,String userName, String email, String gender, String phone, String avata,String role, Boolean status) {
         this.userID=userID;
         this.userName = userName;
         this.email = email;
@@ -47,7 +47,7 @@ public class User {
         this.email = email;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
@@ -59,7 +59,7 @@ public class User {
         this.role = role;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 

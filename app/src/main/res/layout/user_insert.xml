@@ -51,11 +51,24 @@
             android:layout_height="wrap_content"
             android:hint="Role"
             />
-        <EditText
-            android:id="@+id/txtGender"
-            android:hint="Gender (1 or 0)"
+        <RadioGroup
+            android:id="@+id/groupRadioGender"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+            <RadioButton
+                android:id="@+id/btnMale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Male"
+                />
+            <RadioButton
+                android:id="@+id/btnFemale"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Female"
+                />
+        </RadioGroup>
     </LinearLayout>
     <LinearLayout
 

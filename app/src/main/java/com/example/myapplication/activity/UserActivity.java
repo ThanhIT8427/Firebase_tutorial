@@ -18,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.myapplication.R;
@@ -42,6 +44,7 @@ public class UserActivity extends AppCompatActivity {
     private RecyclerView rv;
     private Button btnInsert;
     private Dialog dialog;
+    private String tGender;
     private DatabaseReference dbRet= FirebaseDatabase.getInstance().getReference("User");
     private ArrayList<User> listUser = new ArrayList<>();
 
@@ -65,7 +68,7 @@ public class UserActivity extends AppCompatActivity {
                         String userID=user.child("userID").getValue().toString();
                         String userName= Objects.requireNonNull(user.child("userName").getValue()).toString();
                         String email=Objects.requireNonNull(Objects.requireNonNull(user.child("email").getValue()).toString());
-                        Integer gender=Integer.parseInt(Objects.requireNonNull(user.child("gender").getValue()).toString());
+                        String gender=(Objects.requireNonNull(user.child("gender").getValue()).toString());
                         String phone=user.child("phone").getValue().toString();
                         String avata=user.child("avata").getValue().toString();
                         String role=user.child("role").getValue().toString();
@@ -133,12 +136,21 @@ public class UserActivity extends AppCompatActivity {
     private void InsertUser(Dialog dialog){
         EditText userName=dialog.findViewById(R.id.txtUserName);
         EditText email=dialog.findViewById(R.id.txtEmail);
-        EditText gender=dialog.findViewById(R.id.txtGender);
+        RadioGroup gender=dialog.findViewById(R.id.groupRadioGender);
         EditText phone=dialog.findViewById(R.id.txtPhone);
         EditText avata=dialog.findViewById(R.id.txtAvata);
         EditText role=dialog.findViewById(R.id.txtRole);
         Button btnInsert=dialog.findViewById(R.id.btnInsert);
         Button btnCancel=dialog.findViewById(R.id.btnCancel);
+        gender.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (i){
+                    case R.id.btnFemale: tGender="Female";break;
+                    case R.id.btnMale:tGender="Male";break;
+                }
+            }
+        });
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,7 +163,6 @@ public class UserActivity extends AppCompatActivity {
                 String autoID=dbRet.push().getKey();
                 String tUserName=userName.getText().toString();
                 String tEmail=email.getText().toString();
-                Integer tGender=Integer.parseInt(gender.getText().toString());
                 String tPhone = phone.getText().toString();
                 String tAvata=avata.getText().toString();
                 String tRole=role.getText().toString();
@@ -224,7 +235,7 @@ public class UserActivity extends AppCompatActivity {
                 String autoID=user.getUserID();
                 String tUserName=userName.getText().toString();
                 String tEmail=email.getText().toString();
-                Integer tGender=Integer.parseInt(gender.getText().toString());
+
                 String tPhone = phone.getText().toString();
                 String tAvata=user.getAvata();
                 String tRole=role.getText().toString();
