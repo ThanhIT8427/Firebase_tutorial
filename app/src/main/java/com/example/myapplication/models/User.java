@@ -9,17 +9,18 @@ public class User {
     private String gender;
     private String phone;
     private String avata;
-    private String role;
     private Boolean status;
 
-    public User(String userID,String userName, String email, String gender, String phone, String avata,String role, Boolean status) {
+    public User() {
+    }
+
+    public User(String userID, String userName, String email, String gender, String phone, String avata, Boolean status) {
         this.userID=userID;
         this.userName = userName;
         this.email = email;
         this.gender = gender;
         this.phone = phone;
         this.avata = avata;
-        this.role=role;
         this.status = status;
     }
 
@@ -51,13 +52,6 @@ public class User {
         return gender;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public void setGender(String gender) {
         this.gender = gender;

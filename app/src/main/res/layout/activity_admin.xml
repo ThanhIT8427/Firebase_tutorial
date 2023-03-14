@@ -1,38 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AdminActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="78dp"
-        android:text="User Management"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <data>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="Store Mangement"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+    </data>
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="66dp"
-        android:text="Food Management"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AdminActivity"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="78dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:text="User manager"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/maincolor"
+                    android:layout_marginStart="-20dp"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/text_main"
+                    app:layout_constraintTop_toTopOf="@id/imgUserLeft"
+                    app:layout_constraintStart_toEndOf="@id/imgUserLeft"
+                    app:layout_constraintBottom_toBottomOf="@id/imgUserLeft" />
+
+                <ImageView
+                    android:id="@+id/imgUserLeft"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/usermanagerment"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button">
+
+                <TextView
+                    android:text="Restaurent manager"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/maincolor"
+                    android:layout_marginStart="-20dp"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/text_main"
+                    app:layout_constraintTop_toTopOf="@id/imgRestaurentLeft"
+                    app:layout_constraintStart_toEndOf="@id/imgRestaurentLeft"
+                    app:layout_constraintBottom_toBottomOf="@id/imgRestaurentLeft" />
+
+                <ImageView
+                    android:id="@+id/imgRestaurentLeft"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/restauran"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="66dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button2">
+
+                <TextView
+                    android:text="Food manager"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/maincolor"
+                    android:layout_marginStart="-20dp"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/text_main"
+                    app:layout_constraintTop_toTopOf="@id/imgFoodLeft"
+                    app:layout_constraintStart_toEndOf="@id/imgFoodLeft"
+                    app:layout_constraintBottom_toBottomOf="@id/imgFoodLeft" />
+
+                <ImageView
+                    android:id="@+id/imgFoodLeft"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/food"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/button4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="66dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button3">
+
+                <TextView
+                    android:text="Exit"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/maincolor"
+                    android:layout_marginStart="-20dp"
+                    android:layout_width="200dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/text_main"
+                    app:layout_constraintTop_toTopOf="@id/imgExitLeft"
+                    app:layout_constraintStart_toEndOf="@id/imgExitLeft"
+                    app:layout_constraintBottom_toBottomOf="@id/imgExitLeft" />
+
+                <ImageView
+                    android:id="@+id/imgExitLeft"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/exit"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>

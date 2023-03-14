@@ -10,19 +10,21 @@ import android.widget.Button;
 import com.example.myapplication.activity.FoodActivity;
 import com.example.myapplication.activity.StoreActivity;
 import com.example.myapplication.activity.UserActivity;
+import com.example.myapplication.databinding.ActivityAdminBinding;
 
 public class AdminActivity extends AppCompatActivity {
 
     Button button, button2, button3;
+    private ActivityAdminBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_admin);
+        binding=ActivityAdminBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // USER
-        button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AdminActivity.this, UserActivity.class);
@@ -31,8 +33,7 @@ public class AdminActivity extends AppCompatActivity {
         });
 
         // STORE
-        button2 = findViewById(R.id.button2);
-        button2.setOnClickListener(new View.OnClickListener() {
+        binding.button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AdminActivity.this, StoreActivity.class);
@@ -41,12 +42,18 @@ public class AdminActivity extends AppCompatActivity {
         });
 
         // FOOD
-        button3 = findViewById(R.id.button3);
-        button3.setOnClickListener(new View.OnClickListener() {
+        binding.button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AdminActivity.this, FoodActivity.class);
                 startActivity(intent);
+            }
+        });
+        binding.button4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+                System.exit(0);
             }
         });
 

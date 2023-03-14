@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.R;
 import com.example.myapplication.models.Restaurant;
 import com.example.myapplication.models.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -43,7 +46,14 @@ public class ListStoreAdapter extends RecyclerView.Adapter<ListStoreAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         holder.storeName.setText(restaurants.get(i).getResName());
         holder.storeAddress.setText(restaurants.get(i).getResAddress());
-        holder.detail.setOnClickListener(new View.OnClickListener() {
+        holder.ratingBar.setRating(restaurants.get(i).getResRate());
+        Picasso.with(context).load(restaurants.get(i).getResAvata())
+
+                .placeholder(R.drawable.icon_loading)
+                .error(R.drawable.ic_error)
+                .into(holder.imgStore);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 restaurant.onDetailCLick(holder.getAdapterPosition());
@@ -58,12 +68,14 @@ public class ListStoreAdapter extends RecyclerView.Adapter<ListStoreAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView storeName, storeAddress;
-        Button detail;
+        ImageView imgStore;
+        RatingBar ratingBar;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             storeName = itemView.findViewById(R.id.storeName);
             storeAddress = itemView.findViewById(R.id.storeAddress);
-            detail=itemView.findViewById(R.id.btnDetail);
+            ratingBar=itemView.findViewById(R.id.hotelRating);
+            imgStore=itemView.findViewById(R.id.imageView);
         }
     }
 }

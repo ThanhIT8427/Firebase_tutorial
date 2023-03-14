@@ -4,12 +4,14 @@ public class Food {
     // avatar, full name, rate,restaurant, kind of food
     private String foodID;
     private String foodName;
-    private Integer foodRate;
+    private Float foodRate;
     private String foodAvata;
     private String foodType;
 
+    public Food() {
+    }
 
-    public Food(String foodID, String foodName, Integer foodRate, String foodAvata, String foodType) {
+    public Food(String foodID, String foodName, Float foodRate, String foodAvata, String foodType) {
         this.foodID = foodID;
         this.foodName = foodName;
         this.foodRate = foodRate;
@@ -33,11 +35,11 @@ public class Food {
         this.foodName = foodName;
     }
 
-    public Integer getFoodRate() {
+    public Float getFoodRate() {
         return foodRate;
     }
 
-    public void setFoodRate(Integer foodRate) {
+    public void setFoodRate(Float foodRate) {
         this.foodRate = foodRate;
     }
 

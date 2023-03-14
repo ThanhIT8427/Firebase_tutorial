@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.User;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,10 @@ public class ListUserAdapter extends RecyclerView.Adapter<ListUserAdapter.ViewHo
         User user=users.get(i);
         holder.fullName.setText(user.getUserName());
         holder.email.setText(user.getEmail());
+        Picasso.with(context).load(user.getAvata())
+                .placeholder(R.drawable.icon_loading)
+                .error(R.drawable.ic_error)
+                .into(holder.imgAvata);
         holder.detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -58,6 +64,7 @@ public class ListUserAdapter extends RecyclerView.Adapter<ListUserAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView fullName, email;
+        ImageView imgAvata;
         Button detail;
 
         public ViewHolder(@NonNull View itemView) {
@@ -65,6 +72,7 @@ public class ListUserAdapter extends RecyclerView.Adapter<ListUserAdapter.ViewHo
             fullName = itemView.findViewById(R.id.txtFullname);
             email = itemView.findViewById(R.id.txtEmail);
             detail=itemView.findViewById(R.id.btnDetail);
+            imgAvata=itemView.findViewById(R.id.imgAvata);
         }
     }
 }

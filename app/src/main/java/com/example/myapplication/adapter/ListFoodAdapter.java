@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 import com.example.myapplication.models.Food;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -41,7 +44,13 @@ public class ListFoodAdapter extends RecyclerView.Adapter<ListFoodAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int i) {
         holder.foodName.setText(foods.get(i).getFoodName());
         holder.foodId.setText(foods.get(i).getFoodType());
-        holder.detail.setOnClickListener(new View.OnClickListener() {
+        holder.ratingBar.setRating(foods.get(i).getFoodRate());
+        Picasso.with(context).load(foods.get(i).getFoodAvata())
+
+                .placeholder(R.drawable.icon_loading)
+                .error(R.drawable.ic_error)
+                .into(holder.imageView);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 iFood.onDetailCLick(holder.getAdapterPosition());
@@ -56,12 +65,15 @@ public class ListFoodAdapter extends RecyclerView.Adapter<ListFoodAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView foodName, foodId;
-        Button detail;
+        RatingBar ratingBar;
+        ImageView imageView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             foodName = itemView.findViewById(R.id.foodName);
             foodId = itemView.findViewById(R.id.foodId);
-            detail=itemView.findViewById(R.id.btnDetail);
+            ratingBar=itemView.findViewById(R.id.hotelRating);
+            imageView=itemView.findViewById(R.id.imageView);
         }
     }
 }

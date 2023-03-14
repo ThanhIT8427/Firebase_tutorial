@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +24,9 @@ import android.widget.Toast;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.ListStoreAdapter;
 import com.example.myapplication.adapter.ListUserAdapter;
+import com.example.myapplication.databinding.ActivityStoreBinding;
+import com.example.myapplication.databinding.StoreDialogBinding;
+import com.example.myapplication.databinding.StoreInsertBinding;
 import com.example.myapplication.models.Restaurant;
 import com.example.myapplication.models.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,15 +44,17 @@ import java.util.List;
 import java.util.Objects;
 
 public class StoreActivity extends AppCompatActivity {
-    private RecyclerView rv;
-    private Button btnInsert;
+    private ActivityStoreBinding binding;
     private Dialog dialog;
     private DatabaseReference dbRet= FirebaseDatabase.getInstance().getReference("Restaurant");
     private ArrayList<Restaurant> listRestaurant = new ArrayList<>();
+    private Restaurant restaurantMain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_store);
+        binding=ActivityStoreBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        restaurantMain=new Restaurant();
         init();
         initBtnInsert();
         initRCV();
@@ -68,12 +74,17 @@ public class StoreActivity extends AppCompatActivity {
                         Integer resRate=Integer.parseInt(res.child("resRate").getValue().toString());
                         String resType=res.child("resType").getValue().toString();
                         String resAddress=res.child("resAddress").getValue().toString();
-                        String resMap=res.child("resMap").getValue().toString();
                         String resAvata=res.child("resAvata").getValue().toString();
-                        Restaurant mRestaurant=new Restaurant(resID,resName,resRate,resAvata,resType,resAddress,resMap);
+                        Restaurant mRestaurant=new Restaurant(resID,resName,resRate,resAvata,resType,resAddress);
                         listRestaurant.add(mRestaurant);
+
+                    }
+                    for (Restaurant u:listRestaurant
+                         ) {
+                        Log.d("Rsava",u.getResAvata());
                     }
                     setAdapter(listRestaurant);
+                    initSearch(listRestaurant);
                 }
             }
 
@@ -86,18 +97,42 @@ public class StoreActivity extends AppCompatActivity {
     }
     private void setAdapter(ArrayList<Restaurant> listRestaurant){
         LinearLayoutManager storeVertical = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        RecyclerView srv = findViewById(R.id.storeRecyclerView);
-        srv.setLayoutManager(storeVertical);
+        binding.storeRecyclerView.setLayoutManager(storeVertical);
         ListStoreAdapter adapter = new ListStoreAdapter(this, listRestaurant, new ListStoreAdapter.IRestaurant() {
             @Override
             public void onDetailCLick(int position) {
-                onSetupDetailDiaog(listRestaurant.get(position));
+                restaurantMain=listRestaurant.get(position);
+                onSetupDetailDiaog(restaurantMain);
             }
         });
-        srv.setAdapter(adapter);
+        binding.storeRecyclerView.setAdapter(adapter);
+    }
+    private void initSearch(ArrayList<Restaurant> restaurants){
+        binding.btnSearchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Restaurant> listSearch=new ArrayList<>();
+                String search=binding.searchView.getQuery().toString();
+                if(search.equals("")){
+                    for (Restaurant u:restaurants
+                         ) {
+                        listSearch.add(u);
+                    }
+                }else {
+                    for (Restaurant u: restaurants
+                         ) {
+                        if(u.getResName().contains(search)){
+                            listSearch.add(u);
+                        }
+                    }
+
+                }
+                setAdapter(listSearch);
+            }
+        });
     }
     private void initBtnInsert(){
-        btnInsert.setOnClickListener(new View.OnClickListener() {
+        binding.btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSetupInsertDialog();
@@ -105,13 +140,13 @@ public class StoreActivity extends AppCompatActivity {
         });
     }
     private void init(){
-        rv = findViewById(R.id.storeRecyclerView);
-        btnInsert=findViewById(R.id.btnInsert);
+
     }
     private void onSetupInsertDialog(){
         dialog=new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.store_insert);
+        StoreInsertBinding viewDataBinding=StoreInsertBinding.inflate(LayoutInflater.from(StoreActivity.this));
+        dialog.setContentView(viewDataBinding.getRoot());
         Window window = dialog.getWindow();
 
 
@@ -128,38 +163,28 @@ public class StoreActivity extends AppCompatActivity {
         } else {
             dialog.setCancelable(false);
         }
-        InsertRestaurant(dialog);
+        InsertRestaurant(viewDataBinding);
         dialog.show();
     }
-    private void InsertRestaurant(Dialog dialog){
-        EditText resName=dialog.findViewById(R.id.txtFullName);
-        EditText txtRate=dialog.findViewById(R.id.txtRate);
-        EditText txtKindofF=dialog.findViewById(R.id.txtKindofF);
-        EditText txtAddress=dialog.findViewById(R.id.txtAddress);
-        EditText txtAvata=dialog.findViewById(R.id.txtAvata);
-        EditText txtLong=dialog.findViewById(R.id.txtLong);
-        EditText txtLat=dialog.findViewById(R.id.txtLat);
-        Button btnInsert=dialog.findViewById(R.id.btnInsert);
-        Button btnCancel=dialog.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+    private void InsertRestaurant(StoreInsertBinding viewDataBinding){
+        viewDataBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
             }
         });
-        btnInsert.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String autoID=dbRet.push().getKey();
-                String tUserName=resName.getText().toString();
-                Integer tRate=Integer.parseInt(txtRate.getText().toString());
-                String tKindofF = txtKindofF.getText().toString();
-                String tAddress=txtAddress.getText().toString();
-                String tAvata=txtAvata.getText().toString();
-                String tMap=txtLong.getText().toString()+" - "+txtLat.getText().toString();
-                Restaurant mRestaurant=new Restaurant(autoID,tUserName,tRate,tAvata,tKindofF,tAddress,tMap);
-                assert autoID != null;
-                dbRet.child(autoID).setValue(mRestaurant).addOnCompleteListener(new OnCompleteListener<Void>() {
+                restaurantMain.setResID(autoID);
+                restaurantMain.setResName(viewDataBinding.txtFullName.getText().toString());
+                int c=(int)Double.parseDouble(viewDataBinding.storeRating.getRating()+"");
+                restaurantMain.setResRate(c);
+                restaurantMain.setResType(viewDataBinding.txtKindofF.getText().toString());
+                restaurantMain.setResAddress(viewDataBinding.txtAddress.getText().toString());
+                restaurantMain.setResAvata(viewDataBinding.txtAvata.getText().toString());
+                dbRet.child(autoID).setValue(restaurantMain).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(StoreActivity.this, "Success", Toast.LENGTH_SHORT).show();
@@ -177,10 +202,11 @@ public class StoreActivity extends AppCompatActivity {
         });
     }
 
-    private void onSetupDetailDiaog(Restaurant restaurant){
+    private void onSetupDetailDiaog(Restaurant restaurantMain){
         dialog=new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.store_dialog);
+        StoreDialogBinding viewDataBinding=StoreDialogBinding.inflate(LayoutInflater.from(StoreActivity.this));
+        dialog.setContentView(viewDataBinding.getRoot());
         Window window = dialog.getWindow();
 
 
@@ -197,47 +223,32 @@ public class StoreActivity extends AppCompatActivity {
         } else {
             dialog.setCancelable(false);
         }
-        EditText resName=dialog.findViewById(R.id.txtFullName);
-        EditText txtRate=dialog.findViewById(R.id.txtRate);
-        EditText txtKindofF=dialog.findViewById(R.id.txtKindofF);
-        EditText txtAddress=dialog.findViewById(R.id.txtAddress);
-        ImageView txtAvata=dialog.findViewById(R.id.imgAvata);
-        EditText txtLong=dialog.findViewById(R.id.txtLong);
-        EditText txtLat=dialog.findViewById(R.id.txtLat);
-        Button btnEdit=dialog.findViewById(R.id.btnEdit);
-        Button btnDelete=dialog.findViewById(R.id.btnDelete);
-        Button btnCancel=dialog.findViewById(R.id.btnCancel);
-
-        resName.setText(restaurant.getResName());
-        txtRate.setText(restaurant.getResRate()+"");
-        txtKindofF.setText(restaurant.getResType());
-        txtAddress.setText(restaurant.getResAddress());
-
-        Picasso.with(this).load(restaurant.getResAvata())
+        viewDataBinding.txtFullName.setText(restaurantMain.getResName());
+        viewDataBinding.storeRating.setRating(restaurantMain.getResRate());
+        viewDataBinding.txtKindofF.setText(restaurantMain.getResType());
+        viewDataBinding.txtAddress.setText(restaurantMain.getResAddress());
+        viewDataBinding.txtAvata.setText(restaurantMain.getResAvata());
+        Picasso.with(this).load(restaurantMain.getResAvata())
                 .placeholder(R.drawable.icon_loading)
                 .error(R.drawable.ic_error)
-                .into(txtAvata);
-        String[] arrOfStr = restaurant.getResMap().split("-", 2);
-        txtLong.setText(arrOfStr[0]);
-        txtLat.setText(arrOfStr[1]);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+                .into(viewDataBinding.imgAvata);
+        viewDataBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
             }
         });
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String autoID=restaurant.getResID();
-                String tResName=resName.getText().toString();
-                Integer tRate=Integer.parseInt(txtRate.getText().toString());
-                String tKindofF = txtKindofF.getText().toString();
-                String tAvata=restaurant.getResAvata();
-                String tAddress=txtAddress.getText().toString();
-                String tMap=txtLong.getText()+" - "+txtLat.getText();
-               Restaurant restaurant1=new Restaurant(autoID,tResName,tRate,tAvata,tKindofF,tAddress,tMap);
-                dbRet.child(autoID).setValue(restaurant1).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                restaurantMain.setResName(viewDataBinding.txtFullName.getText().toString());
+                int c=(int)Double.parseDouble(viewDataBinding.storeRating.getRating()+"");
+                restaurantMain.setResRate(c);
+                restaurantMain.setResType(viewDataBinding.txtKindofF.getText().toString());
+                restaurantMain.setResAddress(viewDataBinding.txtAddress.getText().toString());
+                restaurantMain.setResAvata(viewDataBinding.txtAvata.getText().toString());
+                dbRet.child(restaurantMain.getResID()).setValue(restaurantMain).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(StoreActivity.this, "Success", Toast.LENGTH_SHORT).show();
@@ -253,10 +264,10 @@ public class StoreActivity extends AppCompatActivity {
                 });
             }
         });
-        btnDelete.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbRet.child(restaurant.getResID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                dbRet.child(restaurantMain.getResID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(StoreActivity.this, "Success", Toast.LENGTH_SHORT).show();

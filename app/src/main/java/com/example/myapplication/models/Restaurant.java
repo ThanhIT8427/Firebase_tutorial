@@ -7,16 +7,17 @@ public class Restaurant {
     private String resAvata;
     private String resType;
     private String resAddress;
-    private String resMap;
 
-    public Restaurant(String resID, String resName, Integer resRate, String resAvata, String resType, String resAddress, String resMap) {
+    public Restaurant() {
+    }
+
+    public Restaurant(String resID, String resName, Integer resRate, String resAvata, String resType, String resAddress) {
         this.resID = resID;
         this.resName = resName;
         this.resRate = resRate;
         this.resAvata = resAvata;
         this.resType = resType;
         this.resAddress = resAddress;
-        this.resMap = resMap;
     }
 
     public String getResID() {
@@ -65,13 +66,5 @@ public class Restaurant {
 
     public void setResAddress(String resAddress) {
         this.resAddress = resAddress;
-    }
-
-    public String getResMap() {
-        return resMap;
-    }
-
-    public void setResMap(String resMap) {
-        this.resMap = resMap;
     }
 }

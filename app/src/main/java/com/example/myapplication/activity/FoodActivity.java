@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,6 +24,9 @@ import android.widget.Toast;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.ListFoodAdapter;
 import com.example.myapplication.adapter.ListStoreAdapter;
+import com.example.myapplication.databinding.ActivityFoodBinding;
+import com.example.myapplication.databinding.FoodDialogBinding;
+import com.example.myapplication.databinding.FoodInsertBinding;
 import com.example.myapplication.models.Food;
 import com.example.myapplication.models.Restaurant;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,26 +44,51 @@ import java.util.List;
 import java.util.Objects;
 
 public class FoodActivity extends AppCompatActivity {
-    private RecyclerView rv;
-    private Button btnInsert;
+    private ActivityFoodBinding binding;
     private Dialog dialog;
     private DatabaseReference dbRet= FirebaseDatabase.getInstance().getReference("Foods");
     private ArrayList<Food> listFood = new ArrayList<>();
+    private Food foodMain;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_food);
+        binding=ActivityFoodBinding.inflate(getLayoutInflater());
+        foodMain=new Food();
+        setContentView(binding.getRoot());
         init();
         initBtnInsert();
         initRCV();
 
     }
     private void init(){
-        rv = findViewById(R.id.storeRecyclerView);
-        btnInsert=findViewById(R.id.btnInsert);
+
+    }
+    private void initSearch(ArrayList<Food> foods){
+        binding.btnSearchUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Food> listFood=new ArrayList<>();
+                String search=binding.searchView.getQuery().toString();
+                if(search.equals("")){
+                    for (Food u:foods
+                    ) {
+                        listFood.add(u);
+                    }
+                }else {
+                    for (Food u: foods
+                    ) {
+                        if(u.getFoodName().contains(search)){
+                            listFood.add(u);
+                        }
+                    }
+
+                }
+                setAdapter(listFood);
+            }
+        });
     }
     private void initBtnInsert(){
-        btnInsert.setOnClickListener(new View.OnClickListener() {
+        binding.btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onSetupInsertDialog();
@@ -69,7 +98,8 @@ public class FoodActivity extends AppCompatActivity {
     private void onSetupInsertDialog(){
         dialog=new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.food_insert);
+        FoodInsertBinding viewDataBinding=FoodInsertBinding.inflate(LayoutInflater.from(FoodActivity.this));
+        dialog.setContentView(viewDataBinding.getRoot());
         Window window = dialog.getWindow();
 
 
@@ -86,34 +116,27 @@ public class FoodActivity extends AppCompatActivity {
         } else {
             dialog.setCancelable(false);
         }
-        InsertRestaurant(dialog);
+        InsertRestaurant(viewDataBinding);
         dialog.show();
     }
-    private void InsertRestaurant(Dialog dialog){
-        EditText resName=dialog.findViewById(R.id.txtFullName);
-        EditText txtRate=dialog.findViewById(R.id.txtRate);
-        EditText txtKindofF=dialog.findViewById(R.id.txtKindofF);
-        EditText txtAddress=dialog.findViewById(R.id.txtAddress);
-        EditText txtAvata=dialog.findViewById(R.id.txtAvata);
-        Button btnInsert=dialog.findViewById(R.id.btnInsert);
-        Button btnCancel=dialog.findViewById(R.id.btnCancel);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+    private void InsertRestaurant(FoodInsertBinding viewDataBinding){
+        viewDataBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
             }
         });
-        btnInsert.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnInsert.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String autoID=dbRet.push().getKey();
-                String tFoodName=resName.getText().toString();
-                Integer tRate=Integer.parseInt(txtRate.getText().toString());
-                String tKindofF = txtKindofF.getText().toString();
-                String tAvata=txtAvata.getText().toString();
-                Food mFood=new Food(autoID,tFoodName,tRate,tAvata,tKindofF);
-                assert autoID != null;
-                dbRet.child(autoID).setValue(mFood).addOnCompleteListener(new OnCompleteListener<Void>() {
+                foodMain.setFoodID(autoID);
+                foodMain.setFoodName(viewDataBinding.txtFullName.getText().toString());
+                foodMain.setFoodRate(viewDataBinding.storeRating.getRating());
+                foodMain.setFoodType(viewDataBinding.txtKindofF.getText().toString());
+                foodMain.setFoodAvata(viewDataBinding.txtAvata.getText().toString());
+
+                dbRet.child(foodMain.getFoodID()).setValue(foodMain).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(FoodActivity.this, "Success", Toast.LENGTH_SHORT).show();
@@ -140,13 +163,14 @@ public class FoodActivity extends AppCompatActivity {
                     ) {
                         String foodID=food.child("foodID").getValue().toString();
                         String foodName= Objects.requireNonNull(food.child("foodName").getValue()).toString();
-                        Integer foodRate=Integer.parseInt(food.child("foodRate").getValue().toString());
+                        Float foodRate=Float.parseFloat(food.child("foodRate").getValue().toString());
                         String foodType=food.child("foodType").getValue().toString();
                         String foodAvata=food.child("foodAvata").getValue().toString();
                         Food mfood=new Food(foodID,foodName,foodRate,foodAvata,foodType);
                         listFood.add(mfood);
                     }
                     setAdapter(listFood);
+                    initSearch(listFood);
                 }
             }
 
@@ -159,20 +183,22 @@ public class FoodActivity extends AppCompatActivity {
     }
     private void setAdapter(ArrayList<Food> listFood){
         LinearLayoutManager storeVertical = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        RecyclerView srv = findViewById(R.id.foodRecyclerView);
-        srv.setLayoutManager(storeVertical);
+        binding.foodRecyclerView.setLayoutManager(storeVertical);
         ListFoodAdapter adapter = new ListFoodAdapter(this, listFood, new ListFoodAdapter.IFood() {
             @Override
             public void onDetailCLick(int position) {
-                onSetupDetailDiaog(listFood.get(position));
+                foodMain=listFood.get(position);
+                onSetupDetailDiaog(foodMain);
             }
         });
-        srv.setAdapter(adapter);
+        binding.foodRecyclerView.setAdapter(adapter);
     }
     private void onSetupDetailDiaog(Food food){
         dialog=new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.food_dialog);
+        FoodDialogBinding viewDataBinding=FoodDialogBinding.inflate(LayoutInflater.from(FoodActivity.this));
+
+        dialog.setContentView(viewDataBinding.getRoot());
         Window window = dialog.getWindow();
 
 
@@ -189,37 +215,26 @@ public class FoodActivity extends AppCompatActivity {
         } else {
             dialog.setCancelable(false);
         }
-        EditText foodName=dialog.findViewById(R.id.txtFullName);
-        EditText foodRate=dialog.findViewById(R.id.txtRate);
-        EditText txtKindofF=dialog.findViewById(R.id.txtKindofF);
-        ImageView txtAvata=dialog.findViewById(R.id.imgAvata);
-        Button btnEdit=dialog.findViewById(R.id.btnEdit);
-        Button btnDelete=dialog.findViewById(R.id.btnDelete);
-        Button btnCancel=dialog.findViewById(R.id.btnCancel);
-
-        foodName.setText(food.getFoodName());
-        foodRate.setText(food.getFoodRate()+"");
-        txtKindofF.setText(food.getFoodType());
+        viewDataBinding.txtFullName.setText(food.getFoodName());
+        viewDataBinding.storeRating.setRating(food.getFoodRate());
+        viewDataBinding.txtKindofF.setText(food.getFoodType());
         Picasso.with(this).load(food.getFoodAvata())
                 .placeholder(R.drawable.icon_loading)
                 .error(R.drawable.ic_error)
-                .into(txtAvata);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
+                .into(viewDataBinding.imgAvata);
+        viewDataBinding.btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
             }
         });
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String autoID=food.getFoodID();
-                String tResName=foodName.getText().toString();
-                Integer tRate=Integer.parseInt(foodRate.getText().toString());
-                String tKindofF = txtKindofF.getText().toString();
-                String tAvata=food.getFoodAvata();
-                Food food1=new Food(autoID,tResName,tRate,tAvata,tKindofF);
-                dbRet.child(autoID).setValue(food1).addOnCompleteListener(new OnCompleteListener<Void>() {
+                food.setFoodName(viewDataBinding.txtFullName.getText().toString());
+                food.setFoodRate(viewDataBinding.storeRating.getRating());
+                food.setFoodType(viewDataBinding.txtKindofF.getText().toString());
+                dbRet.child(food.getFoodID()).setValue(food).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(FoodActivity.this, "Success", Toast.LENGTH_SHORT).show();
@@ -235,7 +250,7 @@ public class FoodActivity extends AppCompatActivity {
                 });
             }
         });
-        btnDelete.setOnClickListener(new View.OnClickListener() {
+        viewDataBinding.btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dbRet.child(food.getFoodID()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
